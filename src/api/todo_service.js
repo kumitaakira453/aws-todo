@@ -1,10 +1,8 @@
 import { Todo } from "../models/todo.js";
 export class TodoService {
-    constructor(baseUrl) {
-        this.baseUrl = baseUrl;
-    }
-    async getAll() {
-        const url = `${this.baseUrl}/`;
+    static baseUrl = "http://127.0.0.1:8000/default/todo";
+    static async getAll() {
+        const url = `${TodoService.baseUrl}/`;
 
         return fetch(url)
             .then((res) => {
@@ -39,8 +37,8 @@ export class TodoService {
             });
     }
 
-    async update(formData) {
-        const url = `${this.baseUrl}/update_todo/`;
+    static async update(formData) {
+        const url = `${TodoService.baseUrl}/update_todo/`;
         const data = {
             post_type: formData.post_type,
             id: formData.id,

@@ -14,7 +14,9 @@ export class Card {
             const firstChild = Card.cardContainer.firstChild;
             console.log(firstChild);
             Card.cardContainer.removeChild(firstChild);
+            console.log(Card.cardContainer);
         }
+        console.log("すべてのカードが削除されました");
     }
 
     /* todoクラスからcardを作成しDOMに追加する */
@@ -86,9 +88,9 @@ export class Card {
     }
     // 削除ボタンを操作
     async updateIsDeleted() {
-        const todo_service = new TodoService(
-            "http://127.0.0.1:8000/default/todo"
-        );
+        // const todo_service = new TodoService(
+        //     "http://127.0.0.1:8000/default/todo"
+        // );
         const post_type = "update_is_deleted";
         this.todo.is_deleted = true;
         const data = {
@@ -99,7 +101,7 @@ export class Card {
             is_done: null,
             is_deleted: this.todo.is_deleted,
         };
-        const is_success = await todo_service.update(data);
+        const is_success = await TodoService.update(data);
         console.log(is_success);
         if (!is_success) {
             alert("削除に失敗しました");
@@ -127,9 +129,6 @@ export class Card {
         console.log(this.todo);
     }
     async updateIsDone() {
-        const todo_service = new TodoService(
-            "http://127.0.0.1:8000/default/todo"
-        );
         const post_type = "update_is_done";
         const data = {
             post_type: post_type,
@@ -139,7 +138,7 @@ export class Card {
             is_done: this.todo.is_done,
             is_deleted: null,
         };
-        const is_success = await todo_service.update(data);
+        const is_success = await TodoService.update(data);
         console.log(is_success);
         if (!is_success) {
             alert("更新に失敗しました");

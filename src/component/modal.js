@@ -9,6 +9,7 @@ export class Modal {
         this.card = card;
         this.create();
         console.log(this);
+        this.is_submitted = false;
     }
     static modalMask = document.querySelector(".modal_mask");
     static modal = document.querySelector(".modal");
@@ -82,10 +83,7 @@ export class Modal {
         // 保存時の処理(index.jsから移行)
         console.log("保存ボタンが押されたよ");
         const formData = this.createFormData();
-        this.todo_service = new TodoService(
-            "http://127.0.0.1:8000/default/todo"
-        );
-        const is_success = await this.todo_service.update(formData);
+        const is_success = await TodoService.update(formData);
         if (!is_success) {
             if (this.is_new) {
                 Modal.dispose();
@@ -95,35 +93,40 @@ export class Modal {
                 Message.error("変更の保存に失敗しました");
             }
             return;
-        }
-        // 再描画する
-        Card.disposeAll();
-        await this.getTodos();
+        } else {
+            Card.disposeAll();
+            // 再描画する
+            await this.getTodos();
 
-        // 最終的にモーダルを閉じる
-        Modal.dispose();
-        // 結果を通知する(例)
-        Message.info("todoを保存しました");
+            // 最終的にモーダルを閉じる
+            Modal.dispose();
+            // 結果を通知する(例)
+            Message.info("todoを保存しました");
+        }
     }
 
     setEvents() {
-        Modal.modalCloseBtn.addEventListener("click", () => {
+        // 既存のイベントを削除する
+        Modal.modalCloseBtn.removeEventListener("click", this.handleModalClose);
+        Modal.modalMask.removeEventListener("click", this.handleModalClose);
+        Modal.modalSubmit.removeEventListener("click", this.handleModalSubmit);
+        this.handleModalClose = () => {
             Modal.dispose();
-        });
-        Modal.modalMask.addEventListener("click", () => {
-            Modal.dispose();
-        });
-        Modal.modalSubmit.addEventListener("click", async () => {
-            await this.onSave();
-        });
+        };
+        this.handleModalSubmit = async () => {
+            if (!this.is_submitted) {
+                await this.onSave();
+                this.is_submitted = true;
+            }
+        };
+        Modal.modalCloseBtn.addEventListener("click", this.handleModalClose);
+        Modal.modalMask.addEventListener("click", this.handleModalClose);
+        Modal.modalSubmit.addEventListener("click", this.handleModalSubmit);
     }
 
     // 仕方なく再定義している
     async getTodos() {
-        const todos = await new TodoService(
-            "http://127.0.0.1:8000/default/todo"
-        ).getAll();
-        console.log(todos);
+        const todos = await TodoService.getAll();
         // リストを返す
         const cards = todos.map((todo) => new Card(todo));
         const sortedCards = cards.sort((a, b) => {

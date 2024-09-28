@@ -12,20 +12,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
 class IndexManager {
     constructor() {
-        // this.modalMask = document.querySelector(".modal_mask");
-        // this.modal = document.querySelector(".modal");
-        // this.modalCloseBtn = document.querySelector(".modal__close-btn");
-        // this.cardContainer = document.querySelector(".card-container");
         this.floatingBtn = document.querySelector(".floating-btn");
-        // this.modalSubmit = document.querySelector(".modal__submit");
         // todoをリストで管理(インデックスもそのまま利用)
         this.todos = [];
         this.setEvents();
-        // todo_serviceをインスタンス化
-        this.todo_service = new TodoService(
-            "http://127.0.0.1:8000/default/todo"
-        );
-        // cardを描画
         this.getTodos();
     }
     setEvents() {
@@ -38,25 +28,7 @@ class IndexManager {
             Modal.new(newCard);
             console.log(newCard);
         });
-        // this.modalCloseBtn.addEventListener("click", () => {
-        //     this.closeModal();
-        // });
-        // this.modalSubmit.addEventListener("click", async () => {
-        //     await this.modalOnSave();
-        // });
     }
-    /* モーダルの表示 */
-    // openModal() {
-    //     // モーダルの中身を更新する
-
-    //     this.modalMask.style.display = "block";
-    //     this.modal.style.display = "flex";
-    // }
-    /* モーダルの非表示 */
-    // closeModal() {
-    //     this.modalMask.style.display = "none";
-    //     this.modal.style.display = "none";
-    // }
     /* モーダルの保存・作成ボタンを押した時の処理 */
     async modalOnSave() {
         const formId = document.querySelector(".modal").id;
@@ -79,7 +51,7 @@ class IndexManager {
             is_done: null,
             is_deleted: null,
         };
-        is_success = await this.todo_service.update(data);
+        is_success = await TodoService.update(data);
         if (!is_success) {
             alert("更新に失敗しました");
         }
@@ -87,7 +59,7 @@ class IndexManager {
     }
     /* todoを取得しtodosに追加 */
     async getTodos() {
-        this.todos = await this.todo_service.getAll();
+        this.todos = await TodoService.getAll();
         console.log(this.todos);
         // リストを返す
         const cards = this.todos.map((todo) => new Card(todo));
