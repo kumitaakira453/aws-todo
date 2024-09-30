@@ -1,6 +1,7 @@
 import { TodoService } from "../api/todo_service.js";
 import { Modal } from "./modal.js";
 import { CardToglle } from "./card_toggle.js";
+import { Message } from "./message.js";
 
 export class Card {
     constructor(todo) {
@@ -88,9 +89,6 @@ export class Card {
     }
     // 削除ボタンを操作
     async updateIsDeleted() {
-        // const todo_service = new TodoService(
-        //     "http://127.0.0.1:8000/default/todo"
-        // );
         const post_type = "update_is_deleted";
         this.todo.is_deleted = true;
         const data = {
@@ -104,7 +102,7 @@ export class Card {
         const is_success = await TodoService.update(data);
         console.log(is_success);
         if (!is_success) {
-            alert("削除に失敗しました");
+            Message.error("削除に失敗しました");
             // 失敗したので元に戻す
             this.todo.is_deleted = false;
         } else {
@@ -115,7 +113,7 @@ export class Card {
     // is_doneを処理する
     async changeToDone() {
         this.todo.is_done = true;
-        this.setCheckBtn();
+        // this.setCheckBtn();
         // テスト
         await this.updateIsDone();
         // 最終的にapi通信を行う
@@ -123,7 +121,7 @@ export class Card {
     }
     async changeToNotDone() {
         this.todo.is_done = false;
-        this.setCheckBtn();
+        // this.setCheckBtn();
         // テスト
         await this.updateIsDone();
         console.log(this.todo);
@@ -141,10 +139,11 @@ export class Card {
         const is_success = await TodoService.update(data);
         console.log(is_success);
         if (!is_success) {
-            alert("更新に失敗しました");
+            Message.error("更新に失敗しました");
             // 失敗したので元に戻す
-            this.card.is_done = !this.card.is_done;
-            this.setCheckBtn();
+            this.todo.is_done = !this.todo.is_done;
+            // console.log(this.card.is_done);
+            // this.setCheckBtn();
         } else {
             if (this.todo.is_done) {
                 this.card.classList.add("is_done");
@@ -154,6 +153,7 @@ export class Card {
             // トグルの更新
             CardToglle.resetShowCard();
         }
+        this.setCheckBtn();
     }
     dispose() {
         Card.cardContainer.removeChild(this.card);

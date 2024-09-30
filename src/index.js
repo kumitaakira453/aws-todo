@@ -53,7 +53,7 @@ class IndexManager {
         };
         is_success = await TodoService.update(data);
         if (!is_success) {
-            alert("更新に失敗しました");
+            Message.error("更新に失敗しました");
         }
         // 再度データを取得して再描画
     }

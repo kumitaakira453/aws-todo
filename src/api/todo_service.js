@@ -1,7 +1,9 @@
 import { Todo } from "../models/todo.js";
+import { Message } from "../component/message.js";
 export class TodoService {
     static baseUrl = "http://127.0.0.1:8000/default/todo";
     static async getAll() {
+        Message.dispose();
         const url = `${TodoService.baseUrl}/`;
 
         return fetch(url)
@@ -38,6 +40,7 @@ export class TodoService {
     }
 
     static async update(formData) {
+        Message.dispose();
         const url = `${TodoService.baseUrl}/update_todo/`;
         const data = {
             post_type: formData.post_type,
