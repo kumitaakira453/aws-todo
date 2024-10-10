@@ -2,9 +2,12 @@ import { Todo } from "../models/todo.js";
 import { Message } from "../component/message.js";
 export class TodoService {
     static baseUrl = "http://127.0.0.1:8000/default/todo";
+    static baseUrl = "";
     static async getAll() {
         Message.dispose();
-        const url = `${TodoService.baseUrl}/`;
+        const url =
+            "https://m5ysmv4i1d.execute-api.ap-northeast-1.amazonaws.com/default/GetTodo";
+        // const url = `${TodoService.baseUrl}`;
 
         return fetch(url)
             .then((res) => {
@@ -16,7 +19,9 @@ export class TodoService {
                 return res.json();
             })
             .then((data) => {
-                const todoItems = data.Items;
+                console.log(data);
+                // const todoItems = data.Items;
+                const todoItems = data;
 
                 // Todoオブジェクトに変換してリストに格納
                 const _todos = todoItems.map(
@@ -41,7 +46,9 @@ export class TodoService {
 
     static async update(formData) {
         Message.dispose();
-        const url = `${TodoService.baseUrl}/update_todo/`;
+        const url =
+            "https://p92h80e9cf.execute-api.ap-northeast-1.amazonaws.com/default/ManageTodo";
+        // const url = `${TodoService.baseUrl}/update_todo/`;
         const data = {
             post_type: formData.post_type,
             id: formData.id,
